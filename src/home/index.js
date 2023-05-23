@@ -14,8 +14,6 @@ export default function Home() {
     return (
         <View style={styles.container}>
 
-            <Text>Essa é a tela home</Text>
-
         </View>
     )
 }

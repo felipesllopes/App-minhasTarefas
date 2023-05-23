@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import firebase from "../../services/firebaseConnection"
 
 export default function Login() {
 
@@ -9,6 +10,34 @@ export default function Login() {
 
     function handleLogin() {
 
+        if (type === 'login') {
+            // fazer o login
+            const user = firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((user) => {
+                    console.log(user.user)
+                    alert("Usuário logado")
+                    setEmail(""); setPassword("");
+                })
+                .catch((err) => {
+                    console.log(err)
+                    alert("Ops! Parece que deu algum erro");
+                    return;
+                })
+
+        } else {
+            // cadastrar o usuário
+            const user = firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((user) => {
+                    console.log(user.user)
+                    alert("Usuário cadastrado com sucesso!")
+                    setEmail(""); setPassword("");
+                })
+                .catch((err) => {
+                    console.log(err)
+                    alert("Ops! Parece que deu algum erro");
+                    return;
+                })
+        }
     }
 
     return (
@@ -37,7 +66,10 @@ export default function Login() {
                 </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setType(type === 'login' ? 'cadastrar' : 'login')}>
+            <TouchableOpacity onPress={() => {
+                setType(type === 'login' ? 'cadastrar' : 'login')
+                setEmail(""); setPassword("");
+            }}>
                 <Text style={{ textAlign: 'center' }}>
                     {type === 'login' ? 'Criar uma conta' : 'Já possuo uma conta'}
                 </Text>
