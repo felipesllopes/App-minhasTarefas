@@ -1,10 +1,10 @@
-import Home from './src/home';
-import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
+import Tarefas from './src/home';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Home />
+      <Tarefas />
       <StatusBar />
     </View>
   );
