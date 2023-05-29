@@ -1,6 +1,7 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 
-import { useState } from "react";
+import Feather from "@expo/vector-icons/Feather";
+import { useEffect, useRef, useState } from "react";
 import { Keyboard } from "react-native";
 import firebase from ".././services/firebaseConnection";
 import Login from "../components/Login";
@@ -11,13 +12,50 @@ export default function Tarefas() {
     const [user, setUser] = useState(null);
     const [task, setTask] = useState([]);
     const [newTask, setNewTask] = useState("");
+    const [key, setKey] = useState('');
+    const inputRef = useRef(null);
 
-    if (!user) {
-        return <Login changeStatus={(user) => setUser(user)} />
-    }
+    useEffect(() => {
+
+        if (!user) {
+            return;
+        }
+
+        firebase.database().ref('tarefas').child(user).once('value', (snapshot) => {
+
+            setTask([]);
+
+            snapshot?.forEach((childItem) => {
+                let data = {
+                    key: childItem.key,
+                    nome: childItem.val().nome
+                }
+                setTask(previousTasks => [...previousTasks, data])
+            })
+        })
+
+    }, [user])
 
     function handleAdd() {
         if (newTask === "") {
+            return;
+        }
+
+        // entrará nessa condição se o usuário estiver editando uma tarefa. Ela é modificada na função handleEdit
+        if (key !== '') {
+            firebase.database().ref('tarefas').child(user).child(key).update({
+                nome: newTask
+            })
+                .then(() => {
+                    const taskIndex = task.findIndex((item) => item.key === key);
+                    const taskClone = task;
+                    taskClone[taskIndex].nome = newTask;
+
+                    setTask([...taskClone]);
+                })
+
+            Keyboard.dismiss();
+            setNewTask('');
             return;
         }
 
@@ -41,24 +79,48 @@ export default function Tarefas() {
     }
 
     function handleDelete(key) {
-        console.log(key)
+        firebase.database().ref('tarefas').child(user).child(key).remove()
+            .then(() => {
+                const findTasks = task.filter(item => item.key !== key);
+                setTask(findTasks);
+            })
     }
 
     function handleEdit(data) {
-        console.log("ITEM CLICADO", data)
+        setKey(data.key);
+        setNewTask(data.nome);
+        inputRef.current.focus();
     }
 
+    function cancelEdit() {
+        setKey("");
+        setNewTask("");
+        Keyboard.dismiss();
+    }
+
+    if (!user) {
+        return <Login changeStatus={(user) => setUser(user)} />
+    }
 
     return (
         <SafeAreaView style={styles.container}>
 
-            <View style={styles.containerInput}>
+            {key.length > 0 &&
+                (<View style={{ flexDirection: 'row', marginBottom: 8, alignItems: 'center' }}>
+                    <TouchableOpacity onPress={cancelEdit}>
+                        <Feather name="x-circle" size={26} color={"red"} />
+                    </TouchableOpacity>
+                    <Text style={{ marginLeft: 5, fontSize: 15.5 }}>Você está editando uma tarefa</Text>
+                </View>)
+            }
 
+            <View style={styles.containerInput}>
                 <TextInput
                     style={styles.input}
-                    placeholder="O que irá fazer hoje?"
+                    placeholder="O que irei fazer hoje?"
                     value={newTask}
                     onChangeText={(text) => setNewTask(text)}
+                    ref={inputRef}
                 />
                 <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
                     <Text style={styles.buttonText}>+</Text>

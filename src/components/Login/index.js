@@ -15,7 +15,6 @@ export default function Login({ changeStatus }) {
             const user = firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((user) => {
                     changeStatus(user.user.uid)
-                    alert("Usuário logado")
                     setEmail(""); setPassword("");
                 })
                 .catch((err) => {
