@@ -98,6 +98,11 @@ export default function Tarefas() {
         Keyboard.dismiss();
     }
 
+    async function handleLogout() {
+        await firebase.auth().signOut();
+        setUser(null)
+    }
+
     if (!user) {
         return <Login changeStatus={(user) => setUser(user)} />
     }
@@ -129,10 +134,15 @@ export default function Tarefas() {
             </View>
 
             <FlatList
+                showsVerticalScrollIndicator={false}
                 data={task}
                 keyExtractor={item => item.key}
                 renderItem={({ item }) => <TaskList data={item} deleteItem={handleDelete} editItem={handleEdit} />}
             />
+
+            <TouchableOpacity style={styles.logout} activeOpacity={0.7} onPress={handleLogout}>
+                <Text style={styles.logoutText}>Desconectar</Text>
+            </TouchableOpacity>
 
         </SafeAreaView>
     )
@@ -141,6 +151,8 @@ export default function Tarefas() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 10,
+        backgroundColor: '#ADD8E6',
     },
     containerInput: {
         flexDirection: 'row',
@@ -154,6 +166,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 10,
         borderRadius: 5,
+        backgroundColor: '#FFF'
     },
     buttonAdd: {
         height: 50,
@@ -167,5 +180,17 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 22,
+    },
+    logout: {
+        backgroundColor: 'red',
+        paddingVertical: 10,
+        marginVertical: 10,
+        borderRadius: 4,
+    },
+    logoutText: {
+        fontSize: 18,
+        color: '#FFF',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 })

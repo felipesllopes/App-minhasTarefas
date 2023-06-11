@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import firebase from "../../services/firebaseConnection"
 
 export default function Login({ changeStatus }) {
@@ -11,6 +11,12 @@ export default function Login({ changeStatus }) {
     function handleLogin() {
 
         if (type === 'login') {
+
+            if (email === "" || password === "") {
+                alert("Preencha os campos");
+                return;
+            }
+
             // fazer o login
             const user = firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((user) => {
@@ -42,24 +48,25 @@ export default function Login({ changeStatus }) {
     return (
         <View style={styles.container}>
 
-            <Text style={styles.text}>Email</Text>
+            <Image source={require('../../img/logo.png')} style={styles.logo} />
+
             <TextInput
                 style={styles.textInput}
-                placeholder="joao@hotmail.com"
+                placeholder="Email"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={(text) => setEmail(text)}
             />
 
-            <Text style={styles.text}>Senha</Text>
             <TextInput
                 style={styles.textInput}
+                placeholder="Senha"
                 secureTextEntry={true}
                 value={password}
                 onChangeText={(text) => setPassword(text)}
             />
 
-            <TouchableOpacity style={[styles.handleLogin, { backgroundColor: type === 'login' ? '#3ea6f2' : '#141414' }]} onPress={handleLogin}>
+            <TouchableOpacity style={styles.handleLogin} onPress={handleLogin}>
                 <Text style={styles.loginText}>
                     {type === 'login' ? 'Acessar' : 'Cadastrar'}
                 </Text>
@@ -69,7 +76,7 @@ export default function Login({ changeStatus }) {
                 setType(type === 'login' ? 'cadastrar' : 'login')
                 setEmail(""); setPassword("");
             }}>
-                <Text style={{ textAlign: 'center' }}>
+                <Text style={{ textAlign: 'center', fontSize: 17, }}>
                     {type === 'login' ? 'Criar uma conta' : 'Já possuo uma conta'}
                 </Text>
             </TouchableOpacity>
@@ -81,25 +88,36 @@ export default function Login({ changeStatus }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#ADD8E6',
+        padding: 10,
     },
-    text: {
-        fontSize: 17,
-        marginVertical: 4,
+    logo: {
+        height: 196,
+        width: 241,
+        alignSelf: 'center',
+        marginTop: 30,
+        marginBottom: 60,
     },
     textInput: {
         borderWidth: 3,
         padding: 10,
         backgroundColor: 'white',
         fontSize: 18,
+        borderRadius: 6,
+        marginBottom: 20,
     },
     handleLogin: {
         alignItems: 'center',
         justifyContent: 'center',
         height: 45,
         marginVertical: 15,
+        borderRadius: 6,
+        borderWidth: 3,
+        backgroundColor: '#3ea6f2'
     },
     loginText: {
         color: 'white',
-        fontSize: 17,
+        fontSize: 19,
+        fontWeight: 'bold'
     },
 })
