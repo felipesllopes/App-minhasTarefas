@@ -1,8 +1,6 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
-
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useRef, useState } from "react";
-import { Keyboard } from "react-native";
+import { FlatList, Keyboard, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
 import firebase from ".././services/firebaseConnection";
 import Login from "../components/Login";
 import TaskList from "../components/TaskList";
@@ -115,7 +113,7 @@ export default function Tarefas() {
                     <TouchableOpacity onPress={cancelEdit}>
                         <Feather name="x-circle" size={26} color={"red"} />
                     </TouchableOpacity>
-                    <Text style={{ marginLeft: 5, fontSize: 15.5 }}>Você está editando uma tarefa</Text>
+                    <Text style={{ marginLeft: 5, fontSize: 15.5, color: '#FFF' }}>Você está editando uma tarefa</Text>
                 </View>)
             }
 
@@ -152,7 +150,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#ADD8E6',
+        backgroundColor: '#4B0082',
     },
     containerInput: {
         flexDirection: 'row',
@@ -178,11 +176,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     buttonText: {
-        color: 'white',
+        color: '#FFF',
         fontSize: 22,
     },
     logout: {
-        backgroundColor: 'red',
+        backgroundColor: '#FF0000',
         paddingVertical: 10,
         marginVertical: 10,
         borderRadius: 4,

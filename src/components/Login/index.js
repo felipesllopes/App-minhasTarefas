@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from "react-native";
-import firebase from "../../services/firebaseConnection"
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import firebase from "../../services/firebaseConnection";
 
 export default function Login({ changeStatus }) {
 
@@ -13,7 +13,10 @@ export default function Login({ changeStatus }) {
         if (type === 'login') {
 
             if (email === "" || password === "") {
-                alert("Preencha os campos");
+                Alert.alert(
+                    'Atenção!',
+                    "Preencha os campos!"
+                );
                 return;
             }
 
@@ -25,7 +28,10 @@ export default function Login({ changeStatus }) {
                 })
                 .catch((err) => {
                     console.log(err)
-                    alert("Ops! Parece que deu algum erro");
+                    Alert.alert(
+                        'Ops!',
+                        "Parece que deu algum erro"
+                    );
                     return;
                 })
 
@@ -34,12 +40,18 @@ export default function Login({ changeStatus }) {
             const user = firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then((user) => {
                     changeStatus(user.user.uid)
-                    alert("Usuário cadastrado com sucesso!")
+                    Alert.alert(
+                        'Atenção!',
+                        "Usuário cadastrado com sucesso!"
+                    );
                     setEmail(""); setPassword("");
                 })
                 .catch((err) => {
                     console.log(err)
-                    alert("Ops! Parece que deu algum erro");
+                    Alert.alert(
+                        'Ops!',
+                        "Parece que deu algum erro"
+                    );
                     return;
                 })
         }
@@ -48,7 +60,7 @@ export default function Login({ changeStatus }) {
     return (
         <View style={styles.container}>
 
-            <Image source={require('../../img/logo.png')} style={styles.logo} />
+            <Text style={styles.tittle}>Minhas Tarefas</Text>
 
             <TextInput
                 style={styles.textInput}
@@ -76,7 +88,7 @@ export default function Login({ changeStatus }) {
                 setType(type === 'login' ? 'cadastrar' : 'login')
                 setEmail(""); setPassword("");
             }}>
-                <Text style={{ textAlign: 'center', fontSize: 17, }}>
+                <Text style={{ textAlign: 'center', fontSize: 17, color: 'white' }}>
                     {type === 'login' ? 'Criar uma conta' : 'Já possuo uma conta'}
                 </Text>
             </TouchableOpacity>
@@ -88,20 +100,23 @@ export default function Login({ changeStatus }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ADD8E6',
+        backgroundColor: '#4B0082',
         padding: 10,
     },
-    logo: {
-        height: 196,
-        width: 241,
-        alignSelf: 'center',
-        marginTop: 30,
-        marginBottom: 60,
+    tittle: {
+        fontSize: 44,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginVertical: 60,
+        color: '#3ea6f2',
+        textShadowColor: 'white',
+        textShadowOffset: { width: 2, height: 1 },
+        textShadowRadius: 1
     },
     textInput: {
         borderWidth: 3,
         padding: 10,
-        backgroundColor: 'white',
+        backgroundColor: '#FFF',
         fontSize: 18,
         borderRadius: 6,
         marginBottom: 20,
@@ -116,7 +131,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#3ea6f2'
     },
     loginText: {
-        color: 'white',
+        color: '#FFF',
         fontSize: 19,
         fontWeight: 'bold'
     },
